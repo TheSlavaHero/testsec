@@ -35,17 +35,31 @@ public class MyController {
         model.addAttribute("admin", isAdmin(user));
         model.addAttribute("email", dbUser.getEmail());
         model.addAttribute("phone", dbUser.getPhone());
+        model.addAttribute("age", dbUser.getAge());
+        model.addAttribute("authentication", dbUser.isAuthentication());
 
         return "index";
     }
 
+    @RequestMapping(value = "/verify", method = RequestMethod.POST)
+    public String verify(@RequestParam String authKey){
+        User user = getCurrentUser();
+        String login = user.getUsername();
+        CustomUser dbUser = userService.findByLogin(login);
+        if (dbUser.getAuthKey().equals(authKey)) {
+            userService.updateUser(login, true, null);
+        }
+        return "redirect:/";
+    }
+
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String update(@RequestParam(required = false) String email,
-                         @RequestParam(required = false) String phone) {
+                         @RequestParam(required = false) String phone,
+                         @RequestParam(required = false) String age) {
         User user = getCurrentUser();
 
         String login = user.getUsername();
-        userService.updateUser(login, email, phone);
+        userService.updateUser(login, email, phone, age);
 
         return "redirect:/";
     }
@@ -55,10 +69,12 @@ public class MyController {
                          @RequestParam String password,
                          @RequestParam(required = false) String email,
                          @RequestParam(required = false) String phone,
+                         @RequestParam(required = false) String age,
                          Model model) {
         String passHash = passwordEncoder.encode(password);
+        CustomUser dbUser = userService.findByLogin(login);
 
-        if ( ! userService.addUser(login, passHash, UserRole.USER, email, phone)) {
+        if ( ! userService.addUser(login, passHash, UserRole.USER, email, phone, age)) {
             model.addAttribute("exists", true);
             model.addAttribute("login", login);
             return "register";

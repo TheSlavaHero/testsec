@@ -13,6 +13,7 @@
         Password:<br/><input type="password" name="password"><br/>
         E-mail:<br/><input type="text" name="email"><br/>
         Phone:<br/><input type="text" name="phone"><br/>
+        Age:<br/><input type="text" name="age"><br/>
         <input type="submit" />
 
         <c:if test="${exists ne null}">

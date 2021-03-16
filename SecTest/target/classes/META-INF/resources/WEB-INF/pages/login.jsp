@@ -6,7 +6,7 @@
 </head>
 <body>
     <div align="center">
-        <c:url value="/j_spring_security_check" var="loginUrl" />
+        <c:url value="/j_spring_security_check" var="loginUrl" />+
 
         <form action="${loginUrl}" method="POST">
             Login:<br/><input type="text" name="j_login"><br/>
